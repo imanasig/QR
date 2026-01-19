@@ -153,10 +153,10 @@ def public_profile(member_id):
 if __name__ == '__main__':
     init_db()
     # Create static directory if it doesn't exist
+    os.makedirs('static', exist_ok=True)
     
     # Get port from environment variable (for deployment) or use 5001 for local development
     port = int(os.environ.get('PORT', 5001))
     debug = os.environ.get('FLASK_ENV') != 'production'
     
-    app.run(debug=debug, host='0.0.0.0', port=port
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    app.run(debug=debug, host='0.0.0.0', port=port)
