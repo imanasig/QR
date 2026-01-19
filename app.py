@@ -13,6 +13,9 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-i
 # Database configuration
 DATABASE = os.environ.get('DATABASE_PATH', 'members.db')
 
+# Public base URL for QR codes (set APP_BASE_URL on Render/production)
+APP_BASE_URL = os.environ.get('APP_BASE_URL')
+
 def get_db_connection():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
@@ -43,6 +46,14 @@ def generate_member_id():
         conn.close()
         if not existing:
             return member_id
+
+
+def build_public_url(member_id: str) -> str:
+    """Create absolute URL for public profile using APP_BASE_URL when provided."""
+    if APP_BASE_URL:
+        base = APP_BASE_URL.rstrip('/')
+        return f"{base}{url_for('public_profile', member_id=member_id)}"
+    return url_for('public_profile', member_id=member_id, _external=True)
 
 def create_qr_with_logo(data, logo_path='static/logo.png'):
     """Create a QR code with a centered logo overlay."""
@@ -80,11 +91,8 @@ def create_qr_with_logo(data, logo_path='static/logo.png'):
 
 @app.route('/')
 def index():
-    """Admin dashboard - list all members."""
-    conn = get_db_connection()
-    members = conn.execute('SELECT * FROM members ORDER BY created_at DESC').fetchall()
-    conn.close()
-    return render_template('index.html', members=members)
+    """Landing redirects to registration form (no public member listing)."""
+    return redirect(url_for('register'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -125,18 +133,24 @@ def member_details(member_id):
 @app.route('/qr/<member_id>')
 def generate_qr(member_id):
     """Generate and return QR code image for a member."""
-    # Create the URL that the QR will point to
-    profile_url = url_for('public_profile', member_id=member_id, _external=True)
-    
+    # Create the URL that the QR will point to (absolute URL)
+    profile_url = build_public_url(member_id)
+
     # Generate QR code with logo
     qr_img = create_qr_with_logo(profile_url)
-    
+
     # Save to bytes
     img_io = io.BytesIO()
     qr_img.save(img_io, 'PNG')
     img_io.seek(0)
-    
-    return send_file(img_io, mimetype='image/png')
+
+    as_download = request.args.get('download') == '1'
+    return send_file(
+        img_io,
+        mimetype='image/png',
+        download_name=f"MEA-{member_id}.png",
+        as_attachment=as_download,
+    )
 
 @app.route('/profile/<member_id>')
 def public_profile(member_id):

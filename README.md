@@ -43,19 +43,13 @@ The server will start at `http://localhost:5000`
 
 ## Usage
 
-### For Admins:
+### Self-Registration (MEA)
 
-1. **Access Dashboard**: Open `http://localhost:5000`
-2. **Register Member**: Click "Register New Member"
-3. **Enter Details**: Name, Contact Number, Blood Group
-4. **Get QR Code**: System generates unique ID and QR code
-5. **Download/Print**: Save the QR code for member cards
-
-### For Members:
-
-1. **Scan QR Code**: Use any smartphone camera
-2. **View Profile**: Automatically redirected to profile page
-3. **Share Contact**: Contact number is clickable (tel: link)
+1. **Open form**: `http://localhost:5001` (or your deployed URL)
+2. **Enter details**: Name, Mobile, Blood Group
+3. **Generate**: Click “Generate QR”
+4. **Download**: Save the QR image or copy the profile link
+5. **Share/Scan**: Anyone can scan the QR to view the public profile
 
 ## Database
 
@@ -67,8 +61,13 @@ The server will start at `http://localhost:5000`
 
 - **Error Correction**: High (30% of code can be damaged/covered)
 - **Logo Size**: 1/5 of QR code (allows logo without breaking scan)
-- **Format**: PNG image
+- **Format**: PNG image (download available)
 - **Scannable**: Works with all standard QR readers
+
+## Configuration
+
+- `APP_BASE_URL` (recommended in production): Set to your deployed origin (e.g., `https://your-app.onrender.com`) so QR codes embed the public URL instead of localhost.
+- `SECRET_KEY`: Set a strong random value in production.
 
 ## Customization
 
