@@ -1,0 +1,11 @@
+/* 
+   This is a placeholder for your logo.
+   
+   To add your actual logo:
+   1. Save your logo as 'logo.png' in the static/ folder
+   2. Use a square image (e.g., 500x500px) for best results
+   3. PNG format with transparency works best
+   4. The logo will be automatically centered on QR codes
+   
+   If this file doesn't exist, QR codes will still work - just without the logo overlay.
+*/

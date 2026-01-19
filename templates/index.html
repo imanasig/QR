@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Membership QR System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>All Members</h2>
+    
+    {% if members %}
+    <table>
+        <thead>
+            <tr>
+                <th>Member ID</th>
+                <th>Name</th>
+                <th>Contact</th>
+                <th>Blood Group</th>
+                <th>Registered</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in members %}
+            <tr>
+                <td><strong>{{ member.member_id }}</strong></td>
+                <td>{{ member.name }}</td>
+                <td>{{ member.contact }}</td>
+                <td>{{ member.blood_group }}</td>
+                <td>{{ member.created_at }}</td>
+                <td>
+                    <a href="{{ url_for('member_details', member_id=member.member_id) }}" class="btn">View QR</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="text-align: center; color: #666; margin-top: 30px;">
+        No members registered yet. <a href="{{ url_for('register') }}">Register the first member</a>
+    </p>
+    {% endif %}
+</div>
+
+<div style="text-align: center; margin-top: 30px;">
+    <a href="{{ url_for('register') }}" class="btn" style="font-size: 18px; padding: 15px 40px;">
+        + Register New Member
+    </a>
+</div>
+{% endblock %}
